@@ -11,16 +11,20 @@ import MapView from '../components/MapView'
 // ── Empty state ─────────────────────────────────────────────
 function EmptyState({ onReset }) {
   return (
-    <div className="flex flex-col items-center justify-center py-24 text-center space-y-4">
-      <div className="text-6xl opacity-20">🔍</div>
-      <p className="text-white/40 font-mono text-sm">Tidak ada properti yang cocok</p>
-      <p className="text-white/20 font-mono text-xs">Coba ubah filter pencarian kamu</p>
+    <div className="flex flex-col items-center justify-center py-24 text-center space-y-5 animate-fade-in-up">
+      <div className="w-20 h-20 rounded-2xl glass flex items-center justify-center text-4xl shadow-[0_0_30px_rgba(139,92,246,0.15)]">
+        ✨
+      </div>
+      <div>
+        <p className="text-white/80 font-medium text-lg">Tidak ada properti yang cocok</p>
+        <p className="text-white/40 text-sm mt-1">Coba sesuaikan kembali filter pencarian Anda.</p>
+      </div>
       <button
         onClick={onReset}
-        className="mt-2 px-4 py-2 rounded border border-emerald-400/30 text-emerald-400 text-xs
-          font-mono hover:bg-emerald-400/10 transition-all"
+        className="mt-4 px-6 py-2.5 rounded-full bg-white/5 border border-white/10 text-white/80 text-sm
+          hover:bg-violet-500/20 hover:border-violet-500/50 hover:text-violet-300 hover:shadow-[0_0_15px_rgba(139,92,246,0.3)] transition-all duration-300"
       >
-        Reset Filter
+        Reset Pencarian
       </button>
     </div>
   )
@@ -40,21 +44,21 @@ function StatsBar({ total, loading, properties }) {
   }
 
   return (
-    <div className="flex items-center gap-6 px-1 py-3 border-b border-white/6 mb-6">
-      <div className="text-xs font-mono">
-        <span className="text-white/25">Total: </span>
-        <span className="text-emerald-400 tabular-nums">{total}</span>
-        <span className="text-white/25"> properti</span>
+    <div className="flex items-center gap-6 px-2 py-3 border-b border-white/5 mb-6">
+      <div className="text-sm">
+        <span className="text-white/40">Total: </span>
+        <span className="text-violet-400 font-semibold">{total}</span>
+        <span className="text-white/40"> properti</span>
       </div>
       {avgHarga > 0 && (
-        <div className="text-xs font-mono">
-          <span className="text-white/25">Rata-rata: </span>
-          <span className="text-white/60 tabular-nums">Rp {fmt(avgHarga)}</span>
+        <div className="text-sm">
+          <span className="text-white/40">Rata-rata: </span>
+          <span className="text-white/80 font-medium">Rp {fmt(avgHarga)}</span>
         </div>
       )}
-      <div className="text-xs font-mono">
-        <span className="text-white/25">Menampilkan: </span>
-        <span className="text-white/60 tabular-nums">{properties.length}</span>
+      <div className="text-sm">
+        <span className="text-white/40">Menampilkan: </span>
+        <span className="text-white/80 font-medium">{properties.length}</span>
       </div>
     </div>
   )
@@ -66,18 +70,18 @@ function Pagination({ page, total, onPageChange }) {
   if (totalPages <= 1) return null
 
   return (
-    <div className="flex items-center justify-center gap-2 mt-8 font-mono">
+    <div className="flex items-center justify-center gap-2 mt-10 mb-8">
       <button
         onClick={() => onPageChange(page - 1)}
         disabled={page === 1}
-        className="px-3 py-1.5 rounded border border-white/10 text-xs text-white/40
-          hover:border-emerald-400/30 hover:text-emerald-400 disabled:opacity-20
+        className="px-4 py-2 rounded-full border border-white/10 text-sm text-white/60
+          hover:bg-white/5 hover:text-white disabled:opacity-20
           disabled:cursor-not-allowed transition-all"
       >
-        ← Prev
+        Prev
       </button>
 
-      <div className="flex gap-1">
+      <div className="flex gap-1.5 mx-2">
         {Array.from({ length: totalPages }, (_, i) => i + 1)
           .filter((p) => p === 1 || p === totalPages || Math.abs(p - page) <= 1)
           .reduce((acc, p, idx, arr) => {
@@ -87,15 +91,15 @@ function Pagination({ page, total, onPageChange }) {
           }, [])
           .map((p, i) =>
             p === '...' ? (
-              <span key={`ellipsis-${i}`} className="px-2 py-1.5 text-xs text-white/20">…</span>
+              <span key={`ellipsis-${i}`} className="px-2 py-2 text-sm text-white/30">…</span>
             ) : (
               <button
                 key={p}
                 onClick={() => onPageChange(p)}
-                className={`w-8 h-8 rounded text-xs transition-all ${
+                className={`w-9 h-9 rounded-full text-sm font-medium transition-all ${
                   p === page
-                    ? 'bg-emerald-400/15 border border-emerald-400/40 text-emerald-400'
-                    : 'border border-white/8 text-white/35 hover:border-white/20'
+                    ? 'bg-violet-500 text-white shadow-[0_0_15px_rgba(139,92,246,0.5)]'
+                    : 'text-white/60 hover:bg-white/10 hover:text-white'
                 }`}
               >
                 {p}
@@ -107,11 +111,11 @@ function Pagination({ page, total, onPageChange }) {
       <button
         onClick={() => onPageChange(page + 1)}
         disabled={page === totalPages}
-        className="px-3 py-1.5 rounded border border-white/10 text-xs text-white/40
-          hover:border-emerald-400/30 hover:text-emerald-400 disabled:opacity-20
+        className="px-4 py-2 rounded-full border border-white/10 text-sm text-white/60
+          hover:bg-white/5 hover:text-white disabled:opacity-20
           disabled:cursor-not-allowed transition-all"
       >
-        Next →
+        Next
       </button>
     </div>
   )
@@ -124,19 +128,20 @@ function MobileFilterDrawer({ open, onClose }) {
     <>
       {/* Backdrop */}
       <div
-        className="fixed inset-0 bg-black/60 z-40 lg:hidden"
+        className="fixed inset-0 bg-black/60 backdrop-blur-sm z-40 lg:hidden"
         onClick={onClose}
       />
       {/* Drawer */}
-      <div className="fixed inset-y-0 left-0 w-72 z-50 lg:hidden overflow-y-auto
-        bg-[#030712] border-r border-white/8 p-5"
-        style={{ fontFamily: "'JetBrains Mono', monospace" }}
+      <div className="fixed inset-y-0 left-0 w-80 z-50 lg:hidden overflow-y-auto
+        bg-[#05050A]/95 backdrop-blur-xl border-r border-white/5 p-6 shadow-2xl"
       >
-        <div className="flex items-center justify-between mb-4">
-          <span className="text-xs font-bold text-emerald-400 tracking-widest">FILTER</span>
+        <div className="flex items-center justify-between mb-6">
+          <span className="text-sm font-bold text-transparent bg-clip-text bg-gradient-to-r from-violet-400 to-cyan-400 tracking-wider">
+            FILTER PENCARIAN
+          </span>
           <button
             onClick={onClose}
-            className="text-white/30 hover:text-white/60 text-lg leading-none"
+            className="w-8 h-8 flex items-center justify-center rounded-full bg-white/5 text-white/60 hover:bg-white/10 hover:text-white transition-all"
           >
             ✕
           </button>
@@ -181,18 +186,7 @@ export default function HomePage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#030712]"
-      style={{ fontFamily: "'JetBrains Mono', monospace" }}>
-
-      {/* Subtle grid bg */}
-      <div className="fixed inset-0 pointer-events-none opacity-[0.03]"
-        style={{
-          backgroundImage: `linear-gradient(rgba(0,212,170,1) 1px, transparent 1px),
-                            linear-gradient(90deg, rgba(0,212,170,1) 1px, transparent 1px)`,
-          backgroundSize: '60px 60px',
-        }}
-      />
-
+    <div className="min-h-screen">
       <Navbar />
 
       {/* Mobile filter drawer */}
@@ -201,42 +195,38 @@ export default function HomePage() {
       <div className="relative z-10 max-w-[1400px] mx-auto px-4 sm:px-6 py-6">
 
         {/* Hero strip */}
-        <div className="mb-6 flex items-end justify-between">
-          <div>
-            <h1 className="text-2xl font-bold text-white"
-              style={{ fontFamily: "'Syne', sans-serif" }}>
-              Properti{' '}
-              <span style={{
-                background: 'linear-gradient(90deg, #00d4aa, #60a5fa)',
-                WebkitBackgroundClip: 'text',
-                WebkitTextFillColor: 'transparent',
-              }}>Jakarta</span>
+        <div className="mb-8 mt-4 flex flex-col md:flex-row md:items-end justify-between gap-4">
+          <div className="max-w-xl animate-fade-in-up">
+            <h1 className="text-4xl sm:text-5xl font-display font-bold text-white tracking-tight leading-tight">
+              Temukan Properti <br className="hidden sm:block" />
+              <span className="text-gradient">Masa Depanmu</span>
             </h1>
-            <p className="text-white/30 text-xs font-mono mt-1">
-              Temukan properti yang paling cocok untukmu
+            <p className="text-white/50 text-sm sm:text-base mt-3 max-w-md leading-relaxed">
+              Sistem rekomendasi AI cerdas kami membantu Anda menemukan rumah, apartemen, atau tanah yang paling sesuai di Jakarta.
             </p>
           </div>
 
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-3">
             {/* Tombol filter mobile */}
             <button
               onClick={() => setMobileFilterOpen(true)}
-              className="lg:hidden flex items-center gap-2 px-3 py-2 rounded border
-                border-white/10 text-white/40 hover:border-white/25 text-xs font-mono transition-all"
+              className="lg:hidden flex items-center gap-2 px-4 py-2.5 rounded-full border border-white/10 bg-white/5 text-white/80 hover:bg-white/10 text-sm transition-all"
             >
-              <span>⚙</span> Filter
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M22 3H2l8 9.46V19l4 2v-8.54L22 3z"/></svg>
+              Filter
             </button>
 
             {/* Toggle filter panel desktop */}
             <button
               onClick={() => setFilterOpen(!filterOpen)}
-              className={`hidden lg:flex items-center gap-2 px-3 py-2 rounded border text-xs font-mono
-                transition-all ${filterOpen
-                  ? 'border-emerald-400/30 text-emerald-400 bg-emerald-400/8'
-                  : 'border-white/10 text-white/40 hover:border-white/25'}`}
+              className={`hidden lg:flex items-center gap-2 px-4 py-2.5 rounded-full border text-sm font-medium transition-all ${
+                filterOpen
+                  ? 'border-violet-500/30 text-violet-300 bg-violet-500/10 shadow-[0_0_15px_rgba(139,92,246,0.2)]'
+                  : 'border-white/10 text-white/60 bg-white/5 hover:bg-white/10 hover:text-white'
+              }`}
             >
-              <span>⚙</span>
-              <span>{filterOpen ? 'Sembunyikan' : 'Tampilkan'} Filter</span>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M22 3H2l8 9.46V19l4 2v-8.54L22 3z"/></svg>
+              <span>{filterOpen ? 'Sembunyikan Filter' : 'Tampilkan Filter'}</span>
             </button>
           </div>
         </div>

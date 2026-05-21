@@ -4,31 +4,37 @@ export default {
   theme: {
     extend: {
       colors: {
-        cyber: {
-          bg:     '#030712',
-          card:   'rgba(3,7,18,0.85)',
-          border: 'rgba(255,255,255,0.08)',
-          green:  '#00d4aa',
-          blue:   '#3b82f6',
-          purple: '#a78bfa',
+        ai: {
+          bg:     '#05050A',       // Very deep dark, almost black
+          card:   'rgba(20, 20, 30, 0.65)',
+          border: 'rgba(255, 255, 255, 0.06)',
+          indigo: '#6366f1',
+          violet: '#8b5cf6',
+          fuchsia:'#d946ef',
+          cyan:   '#06b6d4',
+          emerald:'#10b981',
+          slate:  '#94a3b8'
         },
       },
       fontFamily: {
-        mono: ["'JetBrains Mono'", "'Fira Code'", 'monospace'],
-        display: ["'Syne'", "'Orbitron'", 'sans-serif'],
+        sans: ["'Plus Jakarta Sans'", 'sans-serif'],
+        display: ["'Outfit'", 'sans-serif'],
       },
       animation: {
         'pulse-slow': 'pulse 3s cubic-bezier(0.4,0,0.6,1) infinite',
         'spin-slow':  'spin 3s linear infinite',
+        'float': 'float 6s ease-in-out infinite',
+      },
+      keyframes: {
+        float: {
+          '0%, 100%': { transform: 'translateY(0)' },
+          '50%': { transform: 'translateY(-10px)' },
+        }
       },
       backgroundImage: {
-        'grid-cyber': `
-          linear-gradient(rgba(0,212,170,0.07) 1px, transparent 1px),
-          linear-gradient(90deg, rgba(0,212,170,0.07) 1px, transparent 1px)
-        `,
-      },
-      backgroundSize: {
-        'grid': '60px 60px',
+        'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
+        'gradient-ai': 'linear-gradient(135deg, #8b5cf6 0%, #06b6d4 100%)',
+        'gradient-ai-text': 'linear-gradient(to right, #8b5cf6, #d946ef)',
       },
     },
   },

@@ -39,22 +39,25 @@ export default function ComparePage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#030712] flex items-center justify-center font-mono text-emerald-400 animate-pulse">
-        MEMUAT DATA...
+      <div className="min-h-screen flex items-center justify-center text-violet-400">
+        <div className="animate-pulse flex items-center gap-3">
+          <div className="w-5 h-5 border-2 border-violet-400 border-t-transparent rounded-full animate-spin" />
+          <span className="font-semibold tracking-widest text-sm">MEMUAT DATA...</span>
+        </div>
       </div>
     )
   }
 
   if (compareList.length === 0 || properties.length === 0) {
     return (
-      <div className="min-h-screen bg-[#030712] flex flex-col items-center justify-center text-white font-mono">
+      <div className="min-h-screen flex flex-col items-center justify-center text-white">
         <Navbar />
         <div className="text-center space-y-4 mt-16">
           <div className="text-6xl opacity-20">⊞</div>
-          <p className="text-white/40 text-sm">Belum ada properti yang dipilih untuk dibandingkan.</p>
+          <p className="text-slate-500 text-sm font-medium">Belum ada properti yang dipilih untuk dibandingkan.</p>
           <button
             onClick={() => navigate('/')}
-            className="mt-2 px-5 py-2 rounded border border-emerald-400/30 text-emerald-400 text-xs hover:bg-emerald-400/10 transition-all"
+            className="mt-4 px-6 py-2.5 rounded-full border border-violet-500/30 bg-violet-500/10 text-violet-400 text-sm font-semibold hover:bg-violet-500/20 transition-all"
           >
             ← Kembali ke Beranda
           </button>
@@ -64,13 +67,13 @@ export default function ComparePage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#030712] text-white" style={{ fontFamily: "'JetBrains Mono', monospace" }}>
+    <div className="min-h-screen text-white">
       <Navbar />
 
       {/* Fixed grid bg */}
-      <div className="fixed inset-0 pointer-events-none opacity-[0.025]"
+      <div className="fixed inset-0 pointer-events-none opacity-[0.03]"
         style={{
-          backgroundImage: `linear-gradient(rgba(0,212,170,1) 1px, transparent 1px), linear-gradient(90deg, rgba(0,212,170,1) 1px, transparent 1px)`,
+          backgroundImage: `linear-gradient(rgba(139,92,246,1) 1px, transparent 1px), linear-gradient(90deg, rgba(139,92,246,1) 1px, transparent 1px)`,
           backgroundSize: '60px 60px',
         }}
       />
@@ -79,9 +82,9 @@ export default function ComparePage() {
         {/* Header */}
         <div className="flex items-center justify-between mb-8">
           <div>
-            <h1 className="text-2xl font-bold" style={{ fontFamily: "'Syne', sans-serif" }}>
+            <h1 className="text-3xl font-display font-bold">
               Perbandingan{' '}
-              <span style={{ background: 'linear-gradient(90deg, #00d4aa, #60a5fa)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-violet-400 to-cyan-400">
                 Properti
               </span>
             </h1>
@@ -104,19 +107,19 @@ export default function ComparePage() {
         </div>
 
         {/* Comparison Table */}
-        <div className="overflow-x-auto rounded-2xl border border-white/10">
-          <table className="w-full text-xs font-mono border-collapse">
+        <div className="overflow-x-auto rounded-3xl border border-white/5 bg-white/[0.02] backdrop-blur-xl shadow-2xl">
+          <table className="w-full text-sm border-collapse">
             <thead>
               <tr className="border-b border-white/10">
-                <th className="p-4 text-left text-white/25 uppercase tracking-widest w-36 bg-slate-900/50">Spesifikasi</th>
+                <th className="p-5 text-left text-slate-500 uppercase tracking-widest text-xs font-semibold w-40 bg-white/5">Spesifikasi</th>
                 {properties.map((p) => (
-                  <th key={p.id} className="p-4 bg-slate-900/30">
-                    <div className="text-left space-y-2">
-                      <div className="w-full h-28 rounded-lg overflow-hidden bg-white/5 mb-3">
+                  <th key={p.id} className="p-5 bg-white/[0.02]">
+                    <div className="text-left space-y-3">
+                      <div className="w-full h-32 rounded-xl overflow-hidden bg-white/5 mb-3 border border-white/10">
                         <img src={p.foto_urls?.[0]} alt={p.nama} className="w-full h-full object-cover" />
                       </div>
-                      <p className="font-bold text-white text-sm line-clamp-2" style={{ fontFamily: "'Syne', sans-serif" }}>{p.nama}</p>
-                      <p className="text-white/30 text-[10px]">◎ {p.kecamatan}, {p.kota_wilayah}</p>
+                      <p className="font-bold text-white text-base line-clamp-2 font-display">{p.nama}</p>
+                      <p className="text-slate-400 text-xs flex items-center gap-1"><span className="text-violet-400/50">📍</span> {p.kecamatan}, {p.kota_wilayah}</p>
                     </div>
                   </th>
                 ))}
@@ -128,7 +131,7 @@ export default function ComparePage() {
                   key={key}
                   className={`border-b border-white/5 ${idx % 2 === 0 ? 'bg-white/[0.02]' : ''}`}
                 >
-                  <td className="p-4 text-white/30 uppercase tracking-tighter text-[10px] font-bold">{label}</td>
+                  <td className="p-5 text-slate-400 uppercase tracking-wider text-[11px] font-bold">{label}</td>
                   {properties.map((p) => {
                     const vals = properties.map((x) => x[key])
                     const numVals = vals.filter((v) => typeof v === 'number')
@@ -138,9 +141,9 @@ export default function ComparePage() {
                         : p[key] === Math.max(...numVals)
                     )
                     return (
-                      <td key={p.id} className={`p-4 ${isBest ? 'text-emerald-400 font-bold' : 'text-white/60'}`}>
+                      <td key={p.id} className={`p-5 ${isBest ? 'text-cyan-400 font-bold' : 'text-slate-300'}`}>
                         {p[key] != null ? fmt(p[key]) : <span className="text-white/20 italic">—</span>}
-                        {isBest && <span className="ml-2 text-[9px] bg-emerald-400/10 border border-emerald-400/30 px-1 py-0.5 rounded">TERBAIK</span>}
+                        {isBest && <span className="ml-2 text-[10px] bg-cyan-500/10 border border-cyan-500/30 text-cyan-400 px-1.5 py-0.5 rounded tracking-wide font-semibold">TERBAIK</span>}
                       </td>
                     )
                   })}
@@ -148,15 +151,15 @@ export default function ComparePage() {
               ))}
               {/* Fasilitas row */}
               <tr className="border-b border-white/5">
-                <td className="p-4 text-white/30 uppercase tracking-tighter text-[10px] font-bold">Fasilitas</td>
+                <td className="p-5 text-slate-400 uppercase tracking-wider text-[11px] font-bold">Fasilitas</td>
                 {properties.map((p) => (
-                  <td key={p.id} className="p-4">
-                    <div className="flex flex-wrap gap-1">
+                  <td key={p.id} className="p-5">
+                    <div className="flex flex-wrap gap-1.5">
                       {p.fasilitas?.length > 0
                         ? p.fasilitas.map((f, i) => (
-                            <span key={i} className="text-[9px] border border-white/10 px-1.5 py-0.5 rounded text-white/40">{f}</span>
+                            <span key={i} className="text-[10px] font-medium border border-white/10 bg-white/5 px-2 py-1 rounded text-slate-300">{f}</span>
                           ))
-                        : <span className="text-white/20 italic text-[10px]">—</span>
+                        : <span className="text-white/20 italic text-xs">—</span>
                       }
                     </div>
                   </td>
@@ -164,12 +167,12 @@ export default function ComparePage() {
               </tr>
               {/* Detail button row */}
               <tr>
-                <td className="p-4" />
+                <td className="p-5" />
                 {properties.map((p) => (
-                  <td key={p.id} className="p-4">
+                  <td key={p.id} className="p-5">
                     <button
                       onClick={() => navigate(`/properti/${p.id}`)}
-                      className="w-full py-2 rounded border border-emerald-400/30 text-emerald-400 text-[10px] hover:bg-emerald-400/10 transition-all"
+                      className="w-full py-2.5 rounded-xl border border-violet-500/30 text-violet-400 text-xs font-semibold bg-violet-500/10 hover:bg-violet-500/20 shadow-[0_0_10px_rgba(139,92,246,0.1)] hover:shadow-[0_0_15px_rgba(139,92,246,0.2)] transition-all"
                     >
                       Lihat Detail →
                     </button>

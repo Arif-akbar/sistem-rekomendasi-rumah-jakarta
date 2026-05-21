@@ -6,17 +6,14 @@ import { useAuth } from '../hooks/UseAuth'
 // ── Animated grid background ────────────────────────────────
 function GridBackground() {
   return (
-    <div className="fixed inset-0 overflow-hidden pointer-events-none">
-      {/* Deep base */}
-      <div className="absolute inset-0 bg-[#030712]" />
-
+    <div className="fixed inset-0 overflow-hidden pointer-events-none z-0">
       {/* Perspective grid floor */}
       <div
-        className="absolute inset-0 opacity-20"
+        className="absolute inset-0 opacity-10"
         style={{
           backgroundImage: `
-            linear-gradient(rgba(0,255,200,0.15) 1px, transparent 1px),
-            linear-gradient(90deg, rgba(0,255,200,0.15) 1px, transparent 1px)
+            linear-gradient(rgba(139,92,246,0.2) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(139,92,246,0.2) 1px, transparent 1px)
           `,
           backgroundSize: '60px 60px',
           maskImage: 'linear-gradient(to bottom, transparent 0%, black 40%, black 70%, transparent 100%)',
@@ -25,25 +22,25 @@ function GridBackground() {
 
       {/* Scanline overlay */}
       <div
-        className="absolute inset-0 opacity-[0.03]"
+        className="absolute inset-0 opacity-[0.02]"
         style={{
-          backgroundImage: 'repeating-linear-gradient(0deg, #00ffcc, #00ffcc 1px, transparent 1px, transparent 4px)',
+          backgroundImage: 'repeating-linear-gradient(0deg, #8b5cf6, #8b5cf6 1px, transparent 1px, transparent 4px)',
         }}
       />
 
       {/* Ambient glow spots */}
-      <div className="absolute top-1/4 left-1/4 w-96 h-96 rounded-full opacity-10"
-        style={{ background: 'radial-gradient(circle, #00d4aa 0%, transparent 70%)' }} />
-      <div className="absolute bottom-1/3 right-1/4 w-64 h-64 rounded-full opacity-8"
-        style={{ background: 'radial-gradient(circle, #3b82f6 0%, transparent 70%)' }} />
+      <div className="absolute top-1/4 left-1/4 w-96 h-96 rounded-full opacity-20"
+        style={{ background: 'radial-gradient(circle, rgba(139,92,246,0.3) 0%, transparent 70%)' }} />
+      <div className="absolute bottom-1/3 right-1/4 w-64 h-64 rounded-full opacity-20"
+        style={{ background: 'radial-gradient(circle, rgba(6,182,212,0.2) 0%, transparent 70%)' }} />
 
       {/* Floating particles */}
       {[...Array(12)].map((_, i) => (
         <div
           key={i}
-          className="absolute w-1 h-1 rounded-full animate-pulse"
+          className="absolute w-1.5 h-1.5 rounded-full animate-pulse shadow-[0_0_10px_rgba(255,255,255,0.5)]"
           style={{
-            background: i % 3 === 0 ? '#00d4aa' : i % 3 === 1 ? '#3b82f6' : '#a78bfa',
+            background: i % 3 === 0 ? '#8b5cf6' : i % 3 === 1 ? '#06b6d4' : '#d946ef',
             left: `${8 + i * 8}%`,
             top: `${15 + (i % 5) * 18}%`,
             animationDelay: `${i * 0.4}s`,
@@ -61,11 +58,11 @@ function CornerAccent({ position }) {
   const cls = {
     'tl': 'top-0 left-0 border-t-2 border-l-2',
     'tr': 'top-0 right-0 border-t-2 border-r-2',
-    'bl': 'bottom-0 left-0 border-b-2 border-l-2',
-    'br': 'bottom-0 right-0 border-b-2 border-r-2',
+    'bl': 'bottom-0 left-0 border-b-2 border-l-2 rounded-bl-xl',
+    'br': 'bottom-0 right-0 border-b-2 border-r-2 rounded-br-xl',
   }[position]
   return (
-    <div className={`absolute w-5 h-5 ${cls} border-emerald-400/60`} />
+    <div className={`absolute w-6 h-6 ${cls} border-violet-500/50 transition-all duration-300 group-hover:border-cyan-400/50`} />
   )
 }
 
@@ -74,15 +71,15 @@ function CyberInput({ label, icon, type = 'text', value, onChange, placeholder, 
   const [focused, setFocused] = useState(false)
   return (
     <div className="space-y-1.5">
-      <label className="text-xs font-mono text-emerald-400/70 tracking-widest uppercase">
+      <label className="text-[11px] font-semibold text-slate-400 tracking-widest uppercase ml-1">
         {label}
       </label>
       <div
-        className={`relative flex items-center transition-all duration-300 ${
-          focused ? 'ring-1 ring-emerald-400/50' : 'ring-1 ring-white/8'
-        } ${error ? 'ring-1 ring-red-500/60' : ''} rounded bg-white/4`}
+        className={`relative flex items-center transition-all duration-300 rounded-xl bg-white/5 border ${
+          focused ? 'border-violet-500/50 shadow-[0_0_15px_rgba(139,92,246,0.15)]' : 'border-white/10'
+        } ${error ? 'border-red-500/60' : ''}`}
       >
-        <span className={`pl-3 text-base transition-colors ${focused ? 'text-emerald-400' : 'text-white/30'}`}>
+        <span className={`pl-4 text-sm transition-colors ${focused ? 'text-violet-400' : 'text-slate-500'}`}>
           {icon}
         </span>
         <input
@@ -92,13 +89,13 @@ function CyberInput({ label, icon, type = 'text', value, onChange, placeholder, 
           placeholder={placeholder}
           onFocus={() => setFocused(true)}
           onBlur={() => setFocused(false)}
-          className="w-full bg-transparent px-3 py-3 text-sm text-white placeholder-white/20
-            outline-none font-mono tracking-wide caret-emerald-400"
+          className="w-full bg-transparent px-3 py-3.5 text-sm text-white placeholder-slate-600
+            outline-none tracking-wide caret-violet-400"
         />
         {/* Active indicator bar */}
         <div
-          className={`absolute bottom-0 left-0 h-[1px] bg-emerald-400 transition-all duration-300 ${
-            focused ? 'w-full opacity-100' : 'w-0 opacity-0'
+          className={`absolute bottom-0 left-4 right-4 h-[2px] bg-gradient-to-r from-violet-500 to-cyan-500 transition-all duration-500 rounded-t-full ${
+            focused ? 'opacity-100 scale-x-100' : 'opacity-0 scale-x-0'
           }`}
         />
       </div>
@@ -196,9 +193,7 @@ export default function AuthPage() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center relative px-4 overflow-hidden"
-      style={{ fontFamily: "'JetBrains Mono', 'Fira Code', monospace" }}
-    >
+    <div className="min-h-screen flex items-center justify-center relative px-4 overflow-hidden">
       <GridBackground />
 
       {/* Centered card */}
@@ -206,51 +201,38 @@ export default function AuthPage() {
 
         {/* Top brand */}
         <div className="text-center mb-8 space-y-3 animate-[fadeIn_0.6s_ease]">
-          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-emerald-400/30 bg-emerald-400/5 text-emerald-400 text-xs tracking-widest">
-            <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-violet-500/30 bg-violet-500/10 text-violet-300 text-xs tracking-widest font-medium shadow-[0_0_15px_rgba(139,92,246,0.15)]">
+            <span className="w-1.5 h-1.5 rounded-full bg-violet-400 animate-pulse" />
             SISTEM AKTIF
           </div>
-          <h1 className="text-4xl font-bold tracking-tight"
-            style={{
-              fontFamily: "'Syne', 'Orbitron', sans-serif",
-              background: 'linear-gradient(135deg, #ffffff 30%, #00d4aa 100%)',
-              WebkitBackgroundClip: 'text',
-              WebkitTextFillColor: 'transparent',
-            }}
-          >
+          <h1 className="text-4xl md:text-5xl font-display font-bold tracking-tight text-gradient">
             RumahJKT
           </h1>
-          <p className="text-white/30 text-xs tracking-widest">
-            SISTEM REKOMENDASI PROPERTI JAKARTA
+          <p className="text-slate-400 text-xs tracking-widest font-medium uppercase mt-2">
+            Sistem Rekomendasi Properti
           </p>
         </div>
 
         {/* Card */}
-        <div
-          className="relative rounded-lg border border-white/8 p-8"
-          style={{
-            background: 'rgba(3, 7, 18, 0.85)',
-            backdropFilter: 'blur(20px)',
-          }}
-        >
+        <div className="relative rounded-3xl border border-white/5 p-8 bg-white/[0.02] backdrop-blur-2xl shadow-2xl group">
           <CornerAccent position="tl" />
           <CornerAccent position="tr" />
           <CornerAccent position="bl" />
           <CornerAccent position="br" />
 
           {/* Mode tabs */}
-          <div className="flex mb-8 border-b border-white/8">
+          <div className="flex mb-8 border-b border-white/10">
             {['login', 'register'].map((m) => (
               <button
                 key={m}
                 onClick={() => switchMode(m)}
-                className={`flex-1 pb-3 text-xs tracking-widest uppercase transition-all duration-200 relative ${
-                  mode === m ? 'text-emerald-400' : 'text-white/30 hover:text-white/60'
+                className={`flex-1 pb-3 text-xs tracking-widest font-semibold uppercase transition-all duration-300 relative ${
+                  mode === m ? 'text-violet-400' : 'text-slate-500 hover:text-slate-300'
                 }`}
               >
                 {m === 'login' ? 'Masuk' : 'Daftar'}
                 {mode === m && (
-                  <div className="absolute bottom-0 left-0 w-full h-[2px] bg-emerald-400 rounded-full" />
+                  <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-1/2 h-[2px] bg-gradient-to-r from-violet-500 to-cyan-500 rounded-t-full shadow-[0_0_10px_rgba(139,92,246,0.8)]" />
                 )}
               </button>
             ))}
@@ -259,14 +241,14 @@ export default function AuthPage() {
           {/* Success state */}
           {success ? (
             <div className="text-center space-y-4 py-8 animate-[fadeIn_0.4s_ease]">
-              <div className="text-5xl">✓</div>
-              <p className="text-emerald-400 font-mono text-sm tracking-wide">Registrasi berhasil!</p>
-              <p className="text-white/40 text-xs leading-relaxed">
-                Cek email kamu untuk verifikasi akun,<br />lalu kembali dan login.
+              <div className="w-16 h-16 mx-auto rounded-full bg-violet-500/20 flex items-center justify-center text-violet-400 text-3xl shadow-[0_0_20px_rgba(139,92,246,0.2)]">✓</div>
+              <p className="text-white font-display text-lg font-semibold tracking-wide">Registrasi berhasil!</p>
+              <p className="text-slate-400 text-sm leading-relaxed">
+                Cek email Anda untuk verifikasi akun,<br />lalu kembali dan login.
               </p>
               <button
                 onClick={() => switchMode('login')}
-                className="mt-4 text-xs text-emerald-400/70 hover:text-emerald-400 underline underline-offset-4 tracking-widest transition-colors"
+                className="mt-6 text-sm text-violet-400 hover:text-violet-300 font-medium tracking-wide transition-colors"
               >
                 Ke halaman login →
               </button>
@@ -329,23 +311,23 @@ export default function AuthPage() {
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full mt-2 py-3.5 rounded relative overflow-hidden
-                  border border-emerald-400/40 text-emerald-400 text-xs tracking-widest uppercase
-                  transition-all duration-300 hover:bg-emerald-400/10 hover:border-emerald-400/70
-                  disabled:opacity-40 disabled:cursor-not-allowed
+                className="w-full mt-4 py-3.5 rounded-xl relative overflow-hidden font-semibold
+                  border border-violet-500/50 bg-violet-500/10 text-white text-sm tracking-wider
+                  transition-all duration-300 hover:bg-violet-500/20 hover:border-violet-500 hover:shadow-[0_0_20px_rgba(139,92,246,0.3)]
+                  disabled:opacity-50 disabled:cursor-not-allowed
                   active:scale-[0.98] group"
               >
                 {/* Shimmer on hover */}
-                <div className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-700
-                  bg-gradient-to-r from-transparent via-emerald-400/10 to-transparent" />
-                <span className="relative">
+                <div className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-1000
+                  bg-gradient-to-r from-transparent via-white/10 to-transparent" />
+                <span className="relative z-10">
                   {loading ? (
-                    <span className="flex items-center justify-center gap-2">
-                      <span className="inline-block w-3 h-3 border border-emerald-400 border-t-transparent rounded-full animate-spin" />
+                    <span className="flex items-center justify-center gap-3">
+                      <span className="inline-block w-4 h-4 border-2 border-white/80 border-t-transparent rounded-full animate-spin" />
                       Memproses...
                     </span>
                   ) : (
-                    mode === 'login' ? '→ Masuk ke Sistem' : '→ Buat Akun'
+                    mode === 'login' ? 'Masuk ke Sistem' : 'Buat Akun'
                   )}
                 </span>
               </button>
@@ -355,30 +337,31 @@ export default function AuthPage() {
                 <button
                   type="button"
                   onClick={() => switchMode('forgot')}
-                  className="text-center w-full text-xs text-white/20 hover:text-emerald-400 transition-colors tracking-wide mt-1"
+                  className="text-center w-full text-sm text-slate-500 hover:text-violet-400 transition-colors mt-3"
                 >
                   Lupa password?
                 </button>
               )}
               {/* Forgot password form */}
               {mode === 'forgot' && (
-                <div className="space-y-4">
-                  <div className="h-px bg-white/8" />
+                <div className="space-y-5">
+                  <div className="h-px bg-white/10" />
                   {resetSent ? (
-                    <div className="text-center space-y-2 py-4">
-                      <p className="text-emerald-400 text-sm">✓ Email reset terkirim!</p>
-                      <p className="text-white/30 text-xs">Cek inbox email kamu dan ikuti instruksinya.</p>
-                      <button type="button" onClick={() => switchMode('login')} className="text-xs text-white/40 hover:text-white/70">← Kembali login</button>
+                    <div className="text-center space-y-3 py-4">
+                      <div className="w-12 h-12 mx-auto rounded-full bg-violet-500/20 flex items-center justify-center text-violet-400 text-xl shadow-[0_0_15px_rgba(139,92,246,0.2)]">✓</div>
+                      <p className="text-white font-medium">Email reset terkirim!</p>
+                      <p className="text-slate-400 text-sm">Cek inbox email Anda dan ikuti instruksinya.</p>
+                      <button type="button" onClick={() => switchMode('login')} className="mt-4 text-sm text-slate-400 hover:text-white transition-colors">← Kembali login</button>
                     </div>
                   ) : (
-                    <form onSubmit={handleForgotPassword} className="space-y-3">
+                    <form onSubmit={handleForgotPassword} className="space-y-4">
                       <CyberInput label="Email" icon="@" type="email" placeholder="email@domain.com" value={form.email} onChange={set('email')} error={errors.email} />
                       {globalError && <p className="text-xs text-red-400">{globalError}</p>}
                       <button type="submit" disabled={loading}
-                        className="w-full py-3 rounded border border-emerald-400/40 text-emerald-400 text-xs hover:bg-emerald-400/10 transition-all disabled:opacity-40">
-                        {loading ? 'Mengirim...' : '→ Kirim Link Reset'}
+                        className="w-full py-3.5 rounded-xl border border-violet-500/50 text-white font-medium bg-violet-500/10 hover:bg-violet-500/20 hover:shadow-[0_0_15px_rgba(139,92,246,0.2)] transition-all disabled:opacity-50">
+                        {loading ? 'Mengirim...' : 'Kirim Link Reset'}
                       </button>
-                      <button type="button" onClick={() => switchMode('login')} className="w-full text-xs text-white/20 hover:text-white/50">← Batal</button>
+                      <button type="button" onClick={() => switchMode('login')} className="w-full text-sm text-slate-500 hover:text-white transition-colors">← Batal</button>
                     </form>
                   )}
                 </div>
