@@ -2,7 +2,8 @@ import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useFilterStore } from '../store/FilterStore'
 import { formatHarga } from '../hooks/UseProperties'
-import { calculateMatchScore } from '../lib/Recommend' 
+import { calculateMatchScore } from '../lib/Recommend'
+import ScoreBadge from './ScoreBadge'
 
 const TIPE_COLOR = {
   rumah:      { bg: 'bg-emerald-400/10', text: 'text-emerald-400',  border: 'border-emerald-400/30' },
@@ -16,32 +17,6 @@ const STATUS_COLOR = {
   aktif:    'text-emerald-400',
   terjual:  'text-red-400',
   nonaktif: 'text-white/30',
-}
-
-function ScoreBadge({ score }) {
-  if (!score) return null
-  const color = score >= 80 ? '#00d4aa' : score >= 60 ? '#60a5fa' : '#f59e0b'
-  return (
-    <div
-      className="absolute top-3 right-3 flex items-center justify-center z-10"
-      title={`Skor kecocokan: ${score}%`}
-    >
-      <svg width="44" height="44" viewBox="0 0 44 44">
-        <circle cx="22" cy="22" r="18" fill="rgba(3,7,18,0.85)" stroke="rgba(255,255,255,0.08)" strokeWidth="1" />
-        <circle
-          cx="22" cy="22" r="15"
-          fill="none" stroke={color} strokeWidth="2.5"
-          strokeDasharray={`${(score / 100) * 94.2} 94.2`}
-          strokeLinecap="round"
-          transform="rotate(-90 22 22)"
-          opacity="0.8"
-        />
-        <text x="22" y="26" textAnchor="middle" fill={color} fontSize="10" fontFamily="monospace" fontWeight="bold">
-          {score}%
-        </text>
-      </svg>
-    </div>
-  )
 }
 
 function WishlistBtn({ active, onClick }) {
@@ -122,7 +97,9 @@ function GridCard({ property, onWishlist, isWishlisted, score }) {
         </div>
 
         {/* Score badge */}
-        <ScoreBadge score={score} />
+        <div className="absolute top-3 right-3 z-10">
+          <ScoreBadge score={score} />
+        </div>
 
         {/* Status dot */}
         {property.status !== 'aktif' && (
@@ -232,7 +209,7 @@ function ListCard({ property, onWishlist, isWishlisted, score }) {
         </div>
         {score && (
           <div className="absolute bottom-1.5 right-1.5">
-            <ScoreBadge score={score} />
+            <ScoreBadge score={score} size={36} />
           </div>
         )}
       </div>

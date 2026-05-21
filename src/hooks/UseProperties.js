@@ -9,6 +9,8 @@ export const SORT_OPTIONS = [
   { label: 'Harga Tertinggi',value: 'harga:desc'       },
 ]
 
+export const PAGE_SIZE = 12
+
 export const formatHarga = (value) => {
     if (!value) return '—'
     if (value >= 1_000_000_000) return `Rp ${(value / 1_000_000_000).toFixed(1)} M`
@@ -28,7 +30,7 @@ export const DEFAULT_FILTERS = {
     keyword: '',
 }
 
-export function useProperties(filters, sortKey = 'created_at:desc') {
+export function useProperties(filters, sortKey = 'created_at:desc', page = 1) {
     const [properties, setProperties] = useState([])
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState(null)
@@ -40,6 +42,7 @@ export function useProperties(filters, sortKey = 'created_at:desc') {
         let cancelled = false
         async function run() {
             setLoading(true)
+            setError(null)
             try {
                 const f = JSON.parse(filtersKey)
                 let q = supabase.from('properties').select('*', { count: 'exact' }).eq('status', 'aktif')
@@ -50,10 +53,16 @@ export function useProperties(filters, sortKey = 'created_at:desc') {
                 if (f.tipe) q = q.eq('tipe', f.tipe)
                 if (f.kamar_tidur > 0) q = q.gte('kamar_tidur', f.kamar_tidur)
                 if (f.kamar_mandi > 0) q = q.gte('kamar_mandi', f.kamar_mandi)
+                if (f.sertifikat) q = q.eq('sertifikat', f.sertifikat)   // ← fix: filter sertifikat
                 if (f.keyword) q = q.ilike('nama', `%${f.keyword}%`)
 
                 const [col, dir] = sortKey.split(':')
                 q = q.order(col, { ascending: dir === 'asc' })
+
+                // Pagination
+                const from = (page - 1) * PAGE_SIZE
+                const to   = from + PAGE_SIZE - 1
+                q = q.range(from, to)
 
                 const { data, error: err, count } = await q
                 if (cancelled) return
@@ -68,7 +77,7 @@ export function useProperties(filters, sortKey = 'created_at:desc') {
         }
         run()
         return () => { cancelled = true }
-    }, [filtersKey, sortKey])
+    }, [filtersKey, sortKey, page])
 
     return { properties, loading, error, total }
 }

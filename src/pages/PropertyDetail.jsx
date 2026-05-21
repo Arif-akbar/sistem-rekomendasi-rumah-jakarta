@@ -1,6 +1,6 @@
 import { useParams, useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
-import { supabase, toggleWishlist, getWishlist } from '../lib/supabase';
+import { supabase, toggleWishlist } from '../lib/supabase';
 import { formatHarga } from '../hooks/UseProperties';
 import { useAuth } from '../hooks/UseAuth';
 import { useFilterStore } from '../store/FilterStore';
@@ -33,12 +33,16 @@ export default function PropertyDetail() {
     window.scrollTo(0, 0);
   }, [id]);
 
-  // Cek status wishlist saat user login
+  // Cek status wishlist saat user login — query spesifik, bukan fetch semua
   useEffect(() => {
     if (!user) return;
-    getWishlist(user.id).then(({ data }) => {
-      if (data) setIsWishlisted(data.some(w => w.property_id === id));
-    });
+    supabase
+      .from('wishlist')
+      .select('id')
+      .eq('user_id', user.id)
+      .eq('property_id', id)
+      .maybeSingle()
+      .then(({ data }) => setIsWishlisted(!!data));
   }, [user, id]);
 
   const handleWishlist = async () => {
@@ -221,7 +225,6 @@ export default function PropertyDetail() {
       </main>
 
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&family=Syne:wght@700&display=swap');
         .scrollbar-hide::-webkit-scrollbar { display: none; }
       `}</style>
     </div>

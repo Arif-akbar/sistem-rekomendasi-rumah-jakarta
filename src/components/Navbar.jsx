@@ -109,10 +109,12 @@ export default function Navbar() {
           {[
             { mode: 'grid', icon: '▦' },
             { mode: 'list', icon: '☰' },
+            { mode: 'map',  icon: '⊕' },
           ].map(({ mode, icon }) => (
             <button
               key={mode}
               onClick={() => setViewMode(mode)}
+              title={mode}
               className={`px-2.5 py-2 text-xs transition-all ${
                 viewMode === mode
                   ? 'bg-emerald-400/15 text-emerald-400'

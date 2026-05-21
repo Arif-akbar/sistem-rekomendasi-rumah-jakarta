@@ -181,9 +181,7 @@ export default function ComparePage() {
         </div>
       </div>
 
-      <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&family=Syne:wght@700&display=swap');
-      `}</style>
+      <style>{``}</style>
     </div>
   )
 }

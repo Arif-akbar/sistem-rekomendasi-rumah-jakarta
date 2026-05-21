@@ -13,12 +13,11 @@ export default function WishlistPage() {
 
   useEffect(() => {
     if (authLoading) return
-    if (!user) { navigate('/login', { replace: true }); return }
     getWishlist(user.id).then(({ data }) => {
       setWishlist(data ?? [])
       setLoading(false)
     })
-  }, [user, authLoading, navigate])
+  }, [user, authLoading])
 
   const handleRemove = async (propertyId) => {
     await toggleWishlist(user.id, propertyId)
@@ -121,7 +120,7 @@ export default function WishlistPage() {
         )}
       </div>
 
-      <style>{`@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&family=Syne:wght@700&display=swap');`}</style>
+      <style>{``}</style>
     </div>
   )
 }

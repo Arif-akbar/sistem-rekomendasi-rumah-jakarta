@@ -1,8 +1,11 @@
 import { useState, useEffect } from 'react';
 import { supabase } from '../lib/supabase';
-// 1. Pastikan useParams diimpor dari react-router-dom
 import { useNavigate, useParams } from 'react-router-dom'; 
 import Navbar from '../components/Navbar';
+
+const FASILITAS_OPTIONS = ['Kolam Renang', 'Gym', 'Keamanan 24 Jam', 'Parkir', 'Taman', 'AC', 'CCTV', 'Lift']
+const SERTIFIKAT_OPTIONS = ['SHM', 'HGB', 'SHGB', 'Strata']
+const STATUS_OPTIONS = ['aktif', 'nonaktif', 'terjual']
 
 export default function PropertyForm() {
   // 2. WAJIB ADA BARIS INI untuk mengambil ID dari URL
@@ -17,7 +20,8 @@ export default function PropertyForm() {
     kota_wilayah: 'Jakarta Selatan', kecamatan: '', alamat: '', 
     kamar_tidur: 0, kamar_mandi: 0, luas_tanah: 0, luas_bangunan: 0, 
     lantai: 1, garasi: 0, sertifikat: 'SHM', kondisi: 'Bagus',
-    foto_urls: [], lat: -6.2088, lng: 106.8456, status: 'aktif'
+    foto_urls: [], lat: -6.2088, lng: 106.8456, status: 'aktif',
+    fasilitas: [],
   });
 
   useEffect(() => {
@@ -32,7 +36,17 @@ export default function PropertyForm() {
   const handleChange = (e) => {
     const { name, value, type } = e.target;
     const parsedValue = type === 'number' ? (value === '' ? 0 : parseFloat(value)) : value;
-    setFormData({ ...formData, [name]: parsedValue });
+    setFormData(prev => ({ ...prev, [name]: parsedValue }));
+  };
+
+  const toggleFasilitas = (f) => {
+    setFormData(prev => {
+      const cur = prev.fasilitas ?? [];
+      return {
+        ...prev,
+        fasilitas: cur.includes(f) ? cur.filter(x => x !== f) : [...cur, f],
+      };
+    });
   };
 
   const handleUpload = async (e) => {
@@ -52,15 +66,16 @@ export default function PropertyForm() {
       alert('Gagal upload gambar: ' + uploadError.message);
     } else {
       const { data } = supabase.storage.from('property-photos').getPublicUrl(filePath);
-      setFormData({ ...formData, foto_urls: [...formData.foto_urls, data.publicUrl] });
+      setFormData(prev => ({ ...prev, foto_urls: [...prev.foto_urls, data.publicUrl] }));
     }
     setUploading(false);
   };
 
   const hapusFoto = (index) => {
-    const newFotos = [...formData.foto_urls];
-    newFotos.splice(index, 1);
-    setFormData({ ...formData, foto_urls: newFotos });
+    setFormData(prev => ({
+      ...prev,
+      foto_urls: prev.foto_urls.filter((_, i) => i !== index),
+    }));
   };
 
   const handleSubmit = async (e) => {
@@ -165,6 +180,83 @@ export default function PropertyForm() {
               <label className="text-white/50 text-xs">Longitude (Peta)</label>
               <input type="number" step="any" name="lng" value={formData.lng} onChange={handleChange} className="bg-[#030712] border border-white/10 p-3 rounded-lg outline-none" />
             </div>
+          </div>
+
+          {/* Baris 5: Alamat & Deskripsi */}
+          <div className="flex flex-col gap-2">
+            <label className="text-white/50 text-xs">Alamat Lengkap</label>
+            <input name="alamat" value={formData.alamat} onChange={handleChange} placeholder="Jl. Contoh No. 1" className="bg-[#030712] border border-white/10 p-3 rounded-lg outline-none focus:border-emerald-500" />
+          </div>
+          <div className="flex flex-col gap-2">
+            <label className="text-white/50 text-xs">Deskripsi</label>
+            <textarea name="deskripsi" value={formData.deskripsi} onChange={handleChange} rows={4} placeholder="Deskripsi properti..." className="bg-[#030712] border border-white/10 p-3 rounded-lg outline-none focus:border-emerald-500 resize-none" />
+          </div>
+
+          {/* Baris 6: Sertifikat & Status */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="flex flex-col gap-2">
+              <label className="text-white/50 text-xs">Sertifikat</label>
+              <div className="flex flex-wrap gap-2">
+                {SERTIFIKAT_OPTIONS.map(s => (
+                  <button
+                    key={s} type="button"
+                    onClick={() => setFormData(prev => ({ ...prev, sertifikat: s }))}
+                    className={`px-3 py-1.5 rounded text-xs border transition-all ${
+                      formData.sertifikat === s
+                        ? 'bg-emerald-400/15 border-emerald-400/40 text-emerald-400'
+                        : 'bg-white/3 border-white/10 text-white/40 hover:border-white/25'
+                    }`}
+                  >
+                    {s}
+                  </button>
+                ))}
+              </div>
+            </div>
+            <div className="flex flex-col gap-2">
+              <label className="text-white/50 text-xs">Status Properti</label>
+              <div className="flex flex-wrap gap-2">
+                {STATUS_OPTIONS.map(s => (
+                  <button
+                    key={s} type="button"
+                    onClick={() => setFormData(prev => ({ ...prev, status: s }))}
+                    className={`px-3 py-1.5 rounded text-xs border transition-all ${
+                      formData.status === s
+                        ? s === 'aktif' ? 'bg-emerald-400/15 border-emerald-400/40 text-emerald-400'
+                          : s === 'terjual' ? 'bg-red-400/15 border-red-400/40 text-red-400'
+                          : 'bg-white/10 border-white/20 text-white/60'
+                        : 'bg-white/3 border-white/10 text-white/40 hover:border-white/25'
+                    }`}
+                  >
+                    {s}
+                  </button>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          {/* Baris 7: Fasilitas */}
+          <div className="flex flex-col gap-2 p-4 border border-white/5 rounded-xl bg-white/3">
+            <label className="text-white/50 text-xs mb-1">Fasilitas Tersedia</label>
+            <div className="flex flex-wrap gap-2">
+              {FASILITAS_OPTIONS.map(f => (
+                <button
+                  key={f} type="button"
+                  onClick={() => toggleFasilitas(f)}
+                  className={`px-3 py-1.5 rounded text-xs border transition-all ${
+                    (formData.fasilitas ?? []).includes(f)
+                      ? 'bg-emerald-400/15 border-emerald-400/40 text-emerald-400'
+                      : 'bg-white/3 border-white/10 text-white/40 hover:border-white/25'
+                  }`}
+                >
+                  {f}
+                </button>
+              ))}
+            </div>
+            {formData.fasilitas?.length > 0 && (
+              <p className="text-[10px] text-white/25 mt-1 font-mono">
+                {formData.fasilitas.length} fasilitas dipilih
+              </p>
+            )}
           </div>
 
           {/* Upload Foto */}
