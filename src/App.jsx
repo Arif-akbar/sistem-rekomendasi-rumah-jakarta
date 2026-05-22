@@ -14,7 +14,7 @@ function App() {
   return (
     <AuthProvider>
       <Router>
-        <div className="relative min-h-screen bg-[#030712]">
+        <div className="relative min-h-screen" style={{ background: '#0c0a14' }}>
           <Routes>
             {/* Public routes */}
             <Route path="/" element={<Home />} />

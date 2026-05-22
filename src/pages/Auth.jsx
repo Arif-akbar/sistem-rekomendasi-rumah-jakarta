@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { signIn, signUp } from '../lib/supabase'
+import { signIn, signUp, supabase } from '../lib/supabase'
 import { useAuth } from '../hooks/UseAuth'
 
 const T = {
@@ -102,8 +102,9 @@ export default function AuthPage() {
     e.preventDefault()
     if (!form.email.includes('@')) { setErrors({ email: 'Email tidak valid' }); return }
     setLoading(true)
-    const { supabase: sb } = await import('../lib/supabase')
-    const { error } = await sb.auth.resetPasswordForEmail(form.email, { redirectTo: `${window.location.origin}/login` })
+    const { error } = await supabase.auth.resetPasswordForEmail(form.email, {
+      redirectTo: `${window.location.origin}/login`,
+    })
     setLoading(false)
     if (error) setGlobalError(error.message)
     else setResetSent(true)
