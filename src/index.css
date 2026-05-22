@@ -65,6 +65,12 @@
 
   .scrollbar-hide::-webkit-scrollbar { display: none; }
   .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
+
+  /* Thin scrollbar untuk filter panel */
+  .scrollbar-thin::-webkit-scrollbar { width: 3px; }
+  .scrollbar-thin::-webkit-scrollbar-track { background: transparent; }
+  .scrollbar-thin::-webkit-scrollbar-thumb { background: rgba(124,58,237,0.3); border-radius: 99px; }
+  .scrollbar-thin::-webkit-scrollbar-thumb:hover { background: rgba(124,58,237,0.6); }
 }
 
 @keyframes fadeInUp {

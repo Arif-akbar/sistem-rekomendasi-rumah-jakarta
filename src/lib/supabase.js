@@ -15,6 +15,15 @@ export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
   },
 })
 
+// Test koneksi saat startup (hanya di development)
+if (import.meta.env.DEV) {
+  supabase.from('properties').select('id', { count: 'exact', head: true })
+    .then(({ count, error }) => {
+      if (error) console.error('❌ Supabase connection error:', error.message)
+      else console.log(`✅ Supabase connected — ${count} properties found`)
+    })
+}
+
 // Auth helpers
 export const signUp = async ({ email, password, nama }) => {
   const { data, error } = await supabase.auth.signUp({
